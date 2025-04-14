@@ -1,0 +1,29 @@
+
+services:
+  database:
+    image: postgres:alpine
+    container_name: postgres-db-3-sessions
+    hostname: database
+    volumes:
+      - postgres_data_3_sessions:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=queso
+      - POSTGRES_DB=ex00
+
+  backend:
+    container_name: docker-compose-down-sessions 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+
+volumes:
+  postgres_data_3_sessions:
