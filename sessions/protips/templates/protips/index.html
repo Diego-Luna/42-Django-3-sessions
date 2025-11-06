@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Life Pro Tips</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body class="bg-white text-dark">
+
+		<!-- Minimal top bar: brand left, anonymous name right (subtle) -->
+		<header class="py-3 border-bottom">
+			<div class="container d-flex align-items-center justify-content-between">
+				<div class="d-flex align-items-center gap-3">
+					<span class="fw-light h5 mb-0">Life Pro Tips</span>
+				</div>
+				<div class="text-end">
+					<small class="text-muted">Hello</small>
+					<div class="fw-semibold">{{ anonymous_name }}</div>
+				</div>
+			</div>
+		</header>
+
+		<!-- Centered, airy hero area using Bootstrap utilities only -->
+		<main class="container d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 96px);">
+			<div class="text-center">
+				<h1 class="display-5 fw-light mb-3">Simple, practical tips for daily life</h1>
+				<p class="lead text-muted mb-4">Share a short Life Pro Tip — clear, useful and minimal.</p>
+				<p class="mt-4 text-muted small">The header shows your anonymous name for 42 seconds.</p>
+			</div>
+		</main>
+
+	</body>
+</html>

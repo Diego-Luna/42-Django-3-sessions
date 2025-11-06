@@ -26,7 +26,7 @@ echo "   python3 manage.py migrate"
 echo "   python3 manage.py runserver 0.0.0.0:8000"
 echo ""
 echo "Or use the helper script:"
-echo "   cd sessions && /app/start.sh"
+echo "   cd sessions"
 echo ""
 echo "The server will be available at: http://localhost:8000"
 echo ""
@@ -36,3 +36,4 @@ echo ""
 # Open a shell in the Django container
 docker exec -it docker-compose-down-sessions /bin/zsh
 
+x

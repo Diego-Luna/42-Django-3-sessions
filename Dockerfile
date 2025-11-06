@@ -42,9 +42,6 @@ RUN pip install --upgrade pip && \
 # Copiar el resto del código de la aplicación
 COPY . .
 
-# Dar permisos de ejecución al script de inicio
-RUN chmod +x /app/start.sh
-
 # Exponer el puerto 8000
 EXPOSE 8000
 
