@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM debian:bookworm
 
 # Evitar interacciones durante la instalación de paquetes
 ENV DEBIAN_FRONTEND=noninteractive
@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
+    python3-full \
     postgresql \
     postgresql-contrib \
     libpq-dev \
@@ -32,11 +33,20 @@ WORKDIR /app
 # Copiar archivos necesarios
 COPY requirements.txt .
 
-# Instalar dependencias
-RUN pip install -r requirements.txt
+# Crear y activar entorno virtual, luego instalar dependencias
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --upgrade pip && \
+    pip install --default-timeout=100 --no-cache-dir -r requirements.txt
 
 # Copiar el resto del código de la aplicación
 COPY . .
 
-# Comando por defecto al iniciar el contenedor
+# Dar permisos de ejecución al script de inicio
+RUN chmod +x /app/start.sh
+
+# Exponer el puerto 8000
+EXPOSE 8000
+
+# Comando por defecto: mantener el contenedor corriendo
 CMD ["tail", "-f", "/dev/null"]

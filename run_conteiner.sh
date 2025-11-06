@@ -1,40 +1,38 @@
 
-# * Run the docker-compose file
+#!/bin/bash
+
+# Stop any previous containers if they exist
+echo "Cleaning up previous containers..."
+docker compose down 2>/dev/null
+
+# Build and start containers
+echo "Building and starting containers..."
 docker compose up --build -d
 
+echo "Waiting for services to be ready..."
+sleep 5
 
-# * run the docker container
+# Check container status
+echo ""
+echo "Containers status:"
+docker ps --filter "name=docker-compose-down-sessions" --filter "name=postgres-db-3-sessions"
+
+echo ""
+echo "Containers started!"
+echo ""
+echo "To run Django inside the container, run:"
+echo "   cd sessions"
+echo "   python3 manage.py migrate"
+echo "   python3 manage.py runserver 0.0.0.0:8000"
+echo ""
+echo "Or use the helper script:"
+echo "   cd sessions && /app/start.sh"
+echo ""
+echo "The server will be available at: http://localhost:8000"
+echo ""
+echo "Opening Django container shell..."
+echo ""
+
+# Open a shell in the Django container
 docker exec -it docker-compose-down-sessions /bin/zsh
 
-
-# ? Run the postgresql container
-docker exec -it postgres-db-3-sessions /bin/sh 
-
-# ? delete the volume
-# docker-compose down -v
-
-# ? run informacion de la base de datos
-# psql -U user -d ex00
-# \dt -> show tables
-# \d table_name -> show columns of table 
-# \c ex00 -> connect to database ex00
-
-# ? run the migrations
-# python3 manage.py makemigrations ex03
-# python3 manage.py migrate 
-
-# python3 manage.py flush
-
-# ? add date in de database
-
-# python3 manage.py loaddata ../ex09_initial_data.json
-
-# ? Clean de database
-# python3 manage.py shell
-# * Para eliminar todos los datos
-# from ex09.models import People, Planets
-# People.objects.all().delete()
-# Planets.objects.all().delete()
-# * Para verificar
-# People.objects.count()  # Debería devolver 0
-# Planets.objects.count()  # Debería devolver 0
