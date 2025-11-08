@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in — Life Pro Tips</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-white text-dark">
+    <header class="py-3 border-bottom">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="fw-light h5 mb-0 text-decoration-none text-dark" href="/">Life Pro Tips</a>
+      </div>
+    </header>
+
+    <main class="container d-flex align-items-center justify-content-center min-vh-100">
+      <div class="row w-100">
+        <div class="col-12 col-md-6 mx-auto">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+              <h2 class="mb-3 text-center">Log in</h2>
+              <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger">{{ form.non_field_errors|striptags }}</div>
+                {% endif %}
+                <div class="mb-3 w-75 mx-auto">
+                  <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                  {{ form.username }}
+                  {% for e in form.username.errors %}
+                    <div class="text-danger small">{{ e }}</div>
+                  {% endfor %}
+                </div>
+                <div class="mb-3 w-75 mx-auto">
+                  <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                  {{ form.password }}
+                  {% for e in form.password.errors %}
+                    <div class="text-danger small">{{ e }}</div>
+                  {% endfor %}
+                </div>
+                <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-dark" type="submit">Log in</button>
+                  <a class="btn btn-outline-secondary" href="{% url 'protips:register' %}">Register</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </body>
+</html>

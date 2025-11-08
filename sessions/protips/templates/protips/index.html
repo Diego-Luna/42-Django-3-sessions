@@ -8,18 +8,27 @@
 	</head>
 	<body class="bg-white text-dark">
 
-		<!-- Minimal top bar: brand left, anonymous name right (subtle) -->
-		<header class="py-3 border-bottom">
-			<div class="container d-flex align-items-center justify-content-between">
-				<div class="d-flex align-items-center gap-3">
-					<span class="fw-light h5 mb-0">Life Pro Tips</span>
+			<!-- Minimal top bar: brand left (link to home), anonymous name / auth links right -->
+			<header class="py-3 border-bottom">
+				<div class="container d-flex align-items-center justify-content-between">
+					<div>
+						<a href="/" class="text-decoration-none text-dark"><span class="fw-light h5 mb-0">Life Pro Tips</span></a>
+					</div>
+					<div class="text-end">
+						{% if user.is_authenticated %}
+							<div class="fw-semibold">{{ user.username }}</div>
+							<div><a href="{% url 'protips:logout' %}">Log out</a></div>
+						{% else %}
+							<small class="text-muted">Hello</small>
+							<div class="fw-semibold">{{ anonymous_name }}</div>
+							<div class="mt-1">
+								<a href="{% url 'protips:login' %}" class="me-2">Log in</a>
+								<a href="{% url 'protips:register' %}">Register</a>
+							</div>
+						{% endif %}
+					</div>
 				</div>
-				<div class="text-end">
-					<small class="text-muted">Hello</small>
-					<div class="fw-semibold">{{ anonymous_name }}</div>
-				</div>
-			</div>
-		</header>
+			</header>
 
 		<!-- Centered, airy hero area using Bootstrap utilities only -->
 		<main class="container d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 96px);">
