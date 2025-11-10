@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 def index(request):
-	"""Homepage for Life Pro Tips — uses anonymous name from context processor or username."""
+	"* Homepage for Life Pro Tips — uses anonymous name from context processor or username."
 	return render(request, 'protips/index.html')
 
 
@@ -52,6 +52,6 @@ def login_view(request):
 
 
 def logout_view(request):
-	# Allow logout via GET for simplicity (exercise expects a link)
+	# * yes is only one line
 	logout(request)
 	return redirect('protips:index')
