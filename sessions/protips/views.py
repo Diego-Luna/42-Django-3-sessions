@@ -1,15 +1,29 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, TipForm
+from .models import Tip
 
 
 User = get_user_model()
 
 
 def index(request):
-	"* Homepage for Life Pro Tips — uses anonymous name from context processor or username."
-	return render(request, 'protips/index.html')
+
+	tips = Tip.objects.all()
+	if request.user.is_authenticated:
+		if request.method == 'POST':
+			form = TipForm(request.POST)
+			if form.is_valid():
+				content = form.cleaned_data['content']
+				Tip.objects.create(content=content, author=request.user)
+				return redirect(reverse('protips:index'))
+		else:
+			form = TipForm()
+
+		return render(request, 'protips/index.html', {'tips': tips, 'form': form})
+	else:
+		return render(request, 'protips/index.html', {'tips': tips})
 
 
 def register_view(request):

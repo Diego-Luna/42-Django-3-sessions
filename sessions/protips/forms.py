@@ -4,6 +4,11 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+class TipForm(forms.Form):
+	content = forms.CharField(
+		label='Your Tip',
+		widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Share a short tip...'})
+	)
 
 class RegistrationForm(forms.Form):
 	username = forms.CharField(
