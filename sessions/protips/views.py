@@ -28,7 +28,8 @@ def tip_delete(request, tip_id):
 		return redirect('protips:login')
 
 	tip = Tip.objects.get(id=tip_id)
-	tip.delete()
+	if tip.author == request.user or request.user.has_perm('protips.delete_tip'):
+		tip.delete()
 	
 	return redirect('protips:index')
 
