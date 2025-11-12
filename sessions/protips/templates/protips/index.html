@@ -62,6 +62,7 @@
 		<div class="container list-group">
 			<h2 class="mb-3 mt-4">Recent Tips</h2>
 			<hr>
+			<!-- * the for loop for the tips, logic for each tip -->
 			{% for tip in tips %}
 			<div class="list-group-item">
 				<p>
@@ -73,6 +74,27 @@
 					</small>
 
 				</small>
+				<div>
+					<form method="post" action="{% url 'protips:tip_vote' tip.id %}" style="display:inline;">
+						{% csrf_token %}
+						<button type="submit" name="value" value="1" class="btn btn-sm btn-outline-success me-2"
+							{% if not user.is_authenticated %}disabled aria-disabled="true" title="Log in to vote"{% endif %}>
+							like : {{ tip.upvote_count }}
+						</button>
+						<button type="submit" name="value" value="-1" class="btn btn-sm btn-outline-danger me-2"
+							{% if not user.is_authenticated %}disabled aria-disabled="true" title="Log in to vote"{% endif %}>
+							dislike : {{ tip.downvote_count }}
+						</button>
+					</form>
+
+					<form method="post" action="{% url 'protips:tip_delete' tip.id %}" style="display:inline;">
+						{% csrf_token %}
+						<button type="submit" class="btn btn-sm btn-outline-secondary"
+							{% if not user.is_authenticated or tip.author != user %}disabled aria-disabled="true" title="Only the author can delete"{% endif %}>
+							Delete
+						</button>
+					</form>
+				</div>
 			</div>
 			{% endfor %}
 		</div>

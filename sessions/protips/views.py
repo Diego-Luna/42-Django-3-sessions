@@ -3,10 +3,34 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse
 from .forms import RegistrationForm, LoginForm, TipForm
 from .models import Tip
+from django.views.decorators.http import require_POST
 
 
 User = get_user_model()
 
+
+@require_POST
+def tip_vote(request, tip_id):
+	if not request.user.is_authenticated:
+		return redirect('protips:login')
+
+	tip = Tip.objects.get(id=tip_id)
+	value = int(request.POST.get('value'))
+	
+	
+	tip.vote(request.user, value)
+	
+	return redirect('protips:index')
+
+@require_POST
+def tip_delete(request, tip_id):
+	if not request.user.is_authenticated:
+		return redirect('protips:login')
+
+	tip = Tip.objects.get(id=tip_id)
+	tip.delete()
+	
+	return redirect('protips:index')
 
 def index(request):
 
