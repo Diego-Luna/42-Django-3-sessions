@@ -83,11 +83,12 @@
 							like : {{ tip.upvote_count }}
 						</button>
 						<button type="submit" name="value" value="-1" class="btn btn-sm btn-outline-danger me-2" {% if
-							not user.is_authenticated %}disabled aria-disabled="true" title="Log in to vote" {% endif
+							not user.is_authenticated or not (tip.author == user or perms.protips.can_downvote) %}disabled aria-disabled="true" title="Log in to vote or " {% endif
 							%}>
 							dislike : {{ tip.downvote_count }}
 						</button>
-					</form>
+
+		</form>
 
 					{% if user.is_authenticated %}
 						{% if tip.author == user or perms.protips.delete_tip %}

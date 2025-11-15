@@ -11,6 +11,8 @@ class Tip(models.Model):
 
   class Meta:
     ordering = ['-date']
+    permissions = [
+        ("can_downvote", "Can downvote tips"),]
 
   def __str__(self):
     return f'Tip by {self.author.username} on {self.date.strftime("%Y-%m-%d %H:%M")} the content: {self.content[:30]}...'

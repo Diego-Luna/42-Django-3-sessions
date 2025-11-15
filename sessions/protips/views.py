@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.urls import reverse
+from django.shortcuts import render, redirect # type: ignore
+from django.contrib.auth import authenticate, login, logout, get_user_model # type: ignore
+from django.urls import reverse # type: ignore
 from .forms import RegistrationForm, LoginForm, TipForm
 from .models import Tip
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST # type: ignore
 
 
 User = get_user_model()
@@ -17,9 +17,10 @@ def tip_vote(request, tip_id):
 	tip = Tip.objects.get(id=tip_id)
 	value = int(request.POST.get('value'))
 	
+	if value == -1 and not (request.user.has_perm('protips.can_downvote') or tip.author == request.user):
+		return redirect('protips:index')
 	
 	tip.vote(request.user, value)
-	
 	return redirect('protips:index')
 
 @require_POST
