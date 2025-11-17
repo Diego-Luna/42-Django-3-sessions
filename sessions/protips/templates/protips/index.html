@@ -19,7 +19,7 @@
 			</div>
 			<div class="text-end">
 				{% if user.is_authenticated %}
-				<div class="fw-semibold">{{ user.username }}</div>
+				<div class="fw-semibold">{{ user.username }} [{{ user.get_reputation }}]</div>
 				<div><a href="{% url 'protips:logout' %}">Log out</a></div>
 				{% else %}
 				<small class="text-muted">Hello</small>
@@ -70,7 +70,7 @@
 				</p>
 				<small>
 					<small class="text-muted">
-						by {{ tip.author.username }} — {{ tip.date|date:"SHORT_DATETIME_FORMAT"}}
+						by {{ tip.author.username }} [{{ tip.author.get_reputation }}] — {{ tip.date|date:"SHORT_DATETIME_FORMAT"}}
 					</small>
 
 				</small>
@@ -82,22 +82,20 @@
 							%}>
 							like : {{ tip.upvote_count }}
 						</button>
-						<button type="submit" name="value" value="-1" class="btn btn-sm btn-outline-danger me-2" {% if
-							not user.is_authenticated or not (tip.author == user or perms.protips.can_downvote) %}disabled aria-disabled="true" title="Log in to vote or " {% endif
-							%}>
-							dislike : {{ tip.downvote_count }}
-						</button>
-
-		</form>
+					<button type="submit" name="value" value="-1" class="btn btn-sm btn-outline-danger me-2" {% if
+						not user.is_authenticated or not (tip.author == user or user.has_downvote_permission) %}disabled aria-disabled="true" title="Need 15 reputation to downvote" {% endif
+						%}>
+						dislike : {{ tip.downvote_count }}
+					</button>		</form>
 
 					{% if user.is_authenticated %}
-						{% if tip.author == user or perms.protips.delete_tip %}
+						{% if tip.author == user or user.has_deletion_permission %}
 							<form method="post" action="{% url 'protips:tip_delete' tip.id %}" style="display:inline;">
 								{% csrf_token %}
 								<button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
 							</form>
 						{% else %}
-							<button class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true" title="Not allowed to delete">Delete</button>
+							<button class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true" title="Need 30 reputation to delete">Delete</button>
 						{% endif %}
 					{% else %}
 						<button class="btn btn-sm btn-outline-secondary" disabled aria-disabled="true" title="Not allowed to delete">Delete</button>

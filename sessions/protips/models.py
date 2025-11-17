@@ -1,18 +1,44 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.db import transaction
+from django.db.models import Sum, Case, When, IntegerField
 
-User = get_user_model()
+# User = get_user_model()
+
+class CustomUser(AbstractUser):
+    def calculate_reputation(self):
+        result = Vote.objects.filter(tip__author=self).aggregate(reputation=Sum(
+            Case(
+                When(value=Vote.UPVOTE, then=5),
+                When(value=Vote.DOWNVOTE, then=-2),
+                default=0,
+                output_field=IntegerField(),
+            )
+        ))
+        return result['reputation'] or 0
+    
+    def get_reputation(self):
+        return self.calculate_reputation()
+    
+    def has_downvote_permission(self):
+        return self.calculate_reputation() >= 15
+    
+    def has_deletion_permission(self):
+        return self.calculate_reputation() >= 30
+
+    def __str__(self):
+       return f"CustomUser: {self.username} (Reputation: {self.calculate_reputation()})"
 
 class Tip(models.Model):
   content = models.TextField()
-  author = models.ForeignKey(User, on_delete=models.CASCADE)
+  author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tips')
   date = models.DateTimeField(auto_now_add=True)
 
   class Meta:
     ordering = ['-date']
-    permissions = [
-        ("can_downvote", "Can downvote tips"),]
+    # permissions = [
+    #     ("can_downvote", "Can downvote tips"),]
 
   def __str__(self):
     return f'Tip by {self.author.username} on {self.date.strftime("%Y-%m-%d %H:%M")} the content: {self.content[:30]}...'
@@ -45,7 +71,7 @@ class Vote(models.Model):
     ]
 
     tip = models.ForeignKey(Tip, related_name='votes', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     value = models.SmallIntegerField(choices=VOTE_CHOICES)
 
     class Meta:

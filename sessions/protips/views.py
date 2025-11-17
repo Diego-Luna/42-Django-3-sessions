@@ -17,7 +17,7 @@ def tip_vote(request, tip_id):
 	tip = Tip.objects.get(id=tip_id)
 	value = int(request.POST.get('value'))
 	
-	if value == -1 and not (request.user.has_perm('protips.can_downvote') or tip.author == request.user):
+	if value == -1 and not (request.user.has_downvote_permission() or tip.author == request.user):
 		return redirect('protips:index')
 	
 	tip.vote(request.user, value)
@@ -29,9 +29,9 @@ def tip_delete(request, tip_id):
 		return redirect('protips:login')
 
 	tip = Tip.objects.get(id=tip_id)
-	if tip.author == request.user or request.user.has_perm('protips.delete_tip'):
+	if tip.author == request.user or request.user.has_deletion_permission():
 		tip.delete()
-	
+
 	return redirect('protips:index')
 
 def index(request):
