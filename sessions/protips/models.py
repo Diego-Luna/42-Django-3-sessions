@@ -22,10 +22,10 @@ class CustomUser(AbstractUser):
         return self.calculate_reputation()
     
     def has_downvote_permission(self):
-        return self.calculate_reputation() >= 15
+        return self.calculate_reputation() >= 15 or self.has_perm('protips.can_downvote')
     
     def has_deletion_permission(self):
-        return self.calculate_reputation() >= 30
+        return self.calculate_reputation() >= 30 or self.has_perm('protips.delete_tip')
 
     def __str__(self):
        return f"CustomUser: {self.username} (Reputation: {self.calculate_reputation()})"
@@ -37,8 +37,9 @@ class Tip(models.Model):
 
   class Meta:
     ordering = ['-date']
-    # permissions = [
-    #     ("can_downvote", "Can downvote tips"),]
+    permissions = [
+        ("can_downvote", "Can downvote tips"),
+    ]
 
   def __str__(self):
     return f'Tip by {self.author.username} on {self.date.strftime("%Y-%m-%d %H:%M")} the content: {self.content[:30]}...'

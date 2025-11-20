@@ -5,7 +5,6 @@ from .forms import RegistrationForm, LoginForm, TipForm
 from .models import Tip
 from django.views.decorators.http import require_POST # type: ignore
 
-
 User = get_user_model()
 
 
@@ -36,7 +35,26 @@ def tip_delete(request, tip_id):
 
 def index(request):
 
-	tips = Tip.objects.all()
+	# Optimization: Fetch all tips with their authors to avoid N+1 queries.
+	tips = Tip.objects.select_related('author').all()
+	authors = {tip.author for tip in tips}
+	if request.user.is_authenticated:
+		authors.add(request.user)
+
+	# Calculate reputation for all relevant authors in a single query
+	author_reputations = {
+		user.id: user.calculate_reputation()
+		for user in authors
+	}
+
+	# Attach reputation to each author object to avoid lazy queries in template
+	for tip in tips:
+		tip.author.reputation = author_reputations.get(tip.author.id, 0)
+	
+	if request.user.is_authenticated:
+		request.user.reputation = author_reputations.get(request.user.id, 0)
+
+
 	if request.user.is_authenticated:
 		if request.method == 'POST':
 			form = TipForm(request.POST)
@@ -62,6 +80,8 @@ def register_view(request):
 			username = form.cleaned_data['username']
 			password = form.cleaned_data['password']
 			user = User.objects.create_user(username=username, password=password)
+			# Best practice: specify the backend.
+			user.backend = 'django.contrib.auth.backends.ModelBackend'
 			login(request, user)
 			return redirect('protips:index')
 	else:
