@@ -19,14 +19,17 @@ docker ps --filter "name=docker-compose-down-sessions" --filter "name=postgres-d
 
 echo ""
 echo "Containers started!"
+
 echo ""
-echo "To run Django inside the container, run:"
-echo "   cd sessions"
-echo "   python3 manage.py migrate"
-echo "   python3 manage.py runserver 0.0.0.0:8000"
+echo "Running initial Django commands..."
+
+docker exec docker-compose-down-sessions python3 sessions/manage.py migrate
+docker exec docker-compose-down-sessions python3 sessions/manage.py populate_db
+
+echo "Initial commands finished."
 echo ""
-echo "Or use the helper script:"
-echo "   cd sessions"
+echo "To run the server inside the container, run:"
+echo "   python3 sessions/manage.py runserver 0.0.0.0:8000"
 echo ""
 echo "The server will be available at: http://localhost:8000"
 echo ""
